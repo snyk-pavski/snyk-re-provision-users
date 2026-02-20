@@ -31,15 +31,18 @@ def get_group_data(group_id):
     print(f"Fetching data for Group ID: {group_id}...")
     url = f"{API_BASE}/group/{group_id}/orgs"
     response = requests.get(url, headers=HEADERS)
-    
+
     if response.status_code != 200:
         print(f"Failed to fetch group {group_id}: {response.text}")
         return None, []
-    
+
     data = response.json()
-    group_name = data.get('name', group_id) 
+    group_name = data.get('name', group_id)
     orgs = data.get('orgs', [])
-    
+
+    print(f"Successfully fetched group: '{group_name}' (ID: {group_id})")
+    print(f"Found {len(orgs)} organization(s) in this group")
+
     return group_name, orgs
 
 def process_group(group_id):
@@ -128,5 +131,12 @@ if __name__ == "__main__":
 
     group_ids_list = [g.strip() for g in args.group_ids.split(',')]
 
+    print(f"========================================")
+    print(f"Processing {len(group_ids_list)} group(s)")
+    print(f"Group ID(s) provided: {', '.join(group_ids_list)}")
+    print(f"========================================\n")
+
     for gid in group_ids_list:
+        print(f">>> Starting processing for Group ID: {gid}")
         process_group(gid)
+        print()  # Add blank line between groups
